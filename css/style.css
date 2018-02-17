@@ -1,0 +1,12 @@
+.rect {
+    width: 30px;
+    height: 30px;
+    background-color: #dca6d1;
+    float: left;
+    margin: 2px;
+}
+
+.row {
+    display: block;
+    clear: both;
+}
