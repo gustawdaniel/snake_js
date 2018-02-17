@@ -2,14 +2,14 @@
     width: 30px;
     height: 30px;
     background-color: #dca6d1;
-    float: left;
+    display: inline-block;
     margin: 2px;
     /*border-radius: 4px;*/
     /*border: solid 1px #dc6f91;*/
 }
 
-.row {
-    clear: both;
+footer {
+    padding-top: 3vh;
 }
 
 .counter {

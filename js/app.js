@@ -5,13 +5,23 @@
         mapHeight: 10,
         snakeColor: "#8165f3",
         mapColor: "#dca6d1",
+        appleColor: "#dc5c61",
         roundTime: 1000
     };
 
     let map = {
         width: config.mapWidth,
         height: config.mapHeight,
-        // apples: [],
+        apples: [],
+        addApple: function () {
+            let apple = {
+                x: Math.floor(Math.random() * this.width),
+                y: Math.floor(Math.random() * this.height)
+            };
+            this.apples.push(apple);
+            $(`div.rect[data-x="${apple.x}"][data-y="${apple.y}"]`).css('background-color',config.appleColor);
+            // console.log(this.apples);
+        },
         init: function () {
             let mapDiv = $('#map');
             for(let i=0; i<this.width; i++) {
@@ -21,6 +31,7 @@
                 }
                 mapDiv.append(rowDiv);
             }
+            this.addApple()
         }
     };
 
