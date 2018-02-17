@@ -11,6 +11,7 @@
     let map = {
         width: config.mapWidth,
         height: config.mapHeight,
+        // apples: [],
         init: function () {
             let mapDiv = $('#map');
             for(let i=0; i<this.width; i++) {
