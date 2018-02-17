@@ -12,8 +12,11 @@ footer {
     padding-top: 3vh;
 }
 
-.counter {
-    text-align: right;
+.info {
     border: 1px solid black;
     padding: 7px;
+}
+
+.counter {
+    float: right;
 }

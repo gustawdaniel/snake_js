@@ -6,7 +6,7 @@
         snakeColor: "#8165f3",
         mapColor: "#dca6d1",
         appleColor: "#dc5c61",
-        roundTime: 1000
+        roundTime: 500
     };
 
     let map = {
@@ -18,9 +18,18 @@
                 x: Math.floor(Math.random() * this.width),
                 y: Math.floor(Math.random() * this.height)
             };
-            this.apples.push(apple);
-            $(`div.rect[data-x="${apple.x}"][data-y="${apple.y}"]`).css('background-color',config.appleColor);
-            // console.log(this.apples);
+            if(snake.containsCoordinates(apple)) { // apple is on snake  then repeat
+                console.log("appleOnSnake");
+                this.addApple();
+            } else {
+                this.apples.push(apple);
+                $(`div.rect[data-x="${apple.x}"][data-y="${apple.y}"]`).css('background-color',config.appleColor);
+            }
+        },
+        removeApple: function (toRemove) {
+            this.apples = this.apples.filter((apple) => {
+                return apple.x !== toRemove.x && apple.y !== toRemove.y
+            });
         },
         init: function () {
             let mapDiv = $('#map');
@@ -36,7 +45,12 @@
     };
 
     let snake = {
+        points: 0,
         body: [{x:5,y:2},{x:4,y:2},{x:3,y:2}],
+        containsCoordinates: function (inspected) {
+            return this.body.filter(function (part) {
+                return part.x === inspected.x && part.y === inspected.y }).length
+        },
         draw: function() {
             this.body.forEach(function (part) {
                 $(`div.rect[data-x="${part.x}"][data-y="${part.y}"]`).css('background-color',config.snakeColor);
@@ -57,10 +71,23 @@
             this.body.unshift(head);
             $(`div.rect[data-x="${head.x}"][data-y="${head.y}"]`)
                 .css('background-color',config.snakeColor);
-            let mapCoordinates  = this.body.pop();
-            $(`div.rect[data-x="${mapCoordinates.x}"][data-y="${mapCoordinates.y}"]`)
-                .css('background-color',config.mapColor);
-
+            if(!this.eatApple()) {
+                let mapCoordinates  = this.body.pop();
+                $(`div.rect[data-x="${mapCoordinates.x}"][data-y="${mapCoordinates.y}"]`)
+                    .css('background-color',config.mapColor);
+            }
+        },
+        eatApple: function () {
+            if(map.apples.filter((part) => {
+                return part.x === this.body[0].x && part.y === this.body[0].y }).length
+            ) {
+                this.points ++;
+                $('.points').text(this.points);
+                console.log("eatApple");
+                map.removeApple(this.body[0]);
+                map.addApple();
+                return true;
+            }
         }
     };
 
