@@ -1,0 +1,12 @@
+{
+  "name": "snake_js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:gustawdaniel/snake_js.git",
+  "author": "Daniel Gustaw <gustaw.daniel@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "http-server": "^0.11.1",
+    "jquery": "^3.3.1"
+  }
+}
