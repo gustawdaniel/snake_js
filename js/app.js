@@ -2,7 +2,8 @@
 
     const config = {
         mapWidth: 10,
-        mapHeight: 10
+        mapHeight: 10,
+        snakeColor: "#8165f3"
     };
 
     let map = {
@@ -22,7 +23,17 @@
         }
     };
 
+    let snake = {
+        body: [{x:5,y:2},{x:4,y:2},{x:3,y:2}],
+        drow: function() {
+            this.body.forEach(function (part) {
+                $(`div.rect[data-x="${part.x}"][data-y="${part.y}"]`).css('background-color',config.snakeColor);
+            })
+        }
+    };
+
     map.init();
+    snake.drow();
 
     
 })();
