@@ -15,8 +15,22 @@ footer {
 .info {
     border: 1px solid black;
     padding: 7px;
+    text-align: center;
+}
+
+.points {
+    float: left;
 }
 
 .counter {
     float: right;
+}
+
+footer ul.history:not(:empty) {
+    border: 1px solid black;
+    padding: 7px;
+}
+
+footer ul.history li {
+    list-style: none;
 }

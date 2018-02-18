@@ -19,7 +19,6 @@
                 y: Math.floor(Math.random() * this.height)
             };
             if(snake.containsCoordinates(apple)) { // apple is on snake  then repeat
-                console.log("appleOnSnake");
                 this.addApple();
             } else {
                 this.apples.push(apple);
@@ -33,6 +32,7 @@
         },
         init: function () {
             let mapDiv = $('#map');
+            mapDiv.html("");
             for(let i=0; i<this.width; i++) {
                 let rowDiv =$('<div>', {class: "row"});
                 for(let j=0; j<this.width; j++) {
@@ -46,7 +46,12 @@
 
     let snake = {
         points: 0,
-        body: [{x:5,y:2},{x:4,y:2},{x:3,y:2}],
+        body: [],
+        init: function () {
+            this.body = [{x:5,y:2},{x:4,y:2},{x:3,y:2}];
+            this.points = 0;
+            this.draw();
+        },
         containsCoordinates: function (inspected) {
             return this.body.filter(function (part) {
                 return part.x === inspected.x && part.y === inspected.y }).length
@@ -83,7 +88,6 @@
             ) {
                 this.points ++;
                 $('.points').text(this.points);
-                console.log("eatApple");
                 map.removeApple(this.body[0]);
                 map.addApple();
                 return true;
@@ -93,15 +97,20 @@
 
     let game = {
         counter: 0,
-        direction: 'right', // right, left, up, down
+        direction: 'right', // right, left, up, down,
+        timeout: undefined,
         run: function () {
             snake.move(this.direction);
         },
         init: function () {
+            this.counter = 0;
             map.init();
-            snake.draw();
-            setInterval(() => {
+            snake.init();
+            this.timeout = setInterval(() => {
                 this.counter ++;
+                if(this.counter === 6) {
+                    this.gameOver();
+                }
                 $('.counter').text(this.counter);
                 this.run();
             },config.roundTime);
@@ -118,6 +127,15 @@
                         this.direction = this.direction === "left" ? this.direction : "right"; break;
                 }
             })
+        },
+        logResult: function () {
+            $('ul.history').prepend($(`<li>${performance.now().toFixed(2)} - ${snake.points} - ${this.counter} - ${(snake.points/this.counter).toFixed(4)}</li>`));
+        },
+        gameOver: function () {
+            clearInterval(this.timeout);
+            this.timeout = undefined;
+            this.logResult();
+            this.init();
         }
     };
 
