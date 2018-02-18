@@ -44,6 +44,7 @@
                 }
                 mapDiv.append(rowDiv);
             }
+            snake.init();
             this.addApple()
         }
     };
@@ -118,20 +119,19 @@
             this.state = 'paused';
             $(".state").text(this.state.toUpperCase());
             map.init();
-            snake.init();
 
             document.addEventListener('keypress',(e) => {
                 console.log({key: e.key, code: e.keyCode});
                 switch (e.key) {
                     case "ArrowUp":
-                        this.direction = this.direction === "down" ? this.direction : "up"; break;
+                        this.direction = this.direction === "down" || this.state === "paused" ? this.direction : "up"; break;
                     case "ArrowDown":
-                        this.direction = this.direction === "up" ? this.direction : "down"; break;
+                        this.direction = this.direction === "up" || this.state === "paused" ? this.direction : "down"; break;
                     case "ArrowLeft":
-                        this.direction = this.direction === "right" ? this.direction : "left"; break;
+                        this.direction = this.direction === "right" || this.state === "paused" ? this.direction : "left"; break;
                     case "ArrowRight":
-                        this.direction = this.direction === "left" ? this.direction : "right"; break;
-                    case "Enter":
+                        this.direction = this.direction === "left" || this.state === "paused" ? this.direction : "right"; break;
+                    case " ":
                         if(this.state === 'paused') {
                             this.state = 'active';
                             $(".state").text(this.state.toUpperCase());
@@ -140,9 +140,15 @@
                                 $('.counter').text(this.counter);
                                 this.run();
                             },config.roundTime);
+                        } else {
+                            this.state = 'paused';
+                            $(".state").text(this.state.toUpperCase());
+                            clearInterval(this.timeout);
+                            this.timeout = undefined;
                         }
                 }
-                if([0, 32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+                if([" ", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.key) > -1) {
+                    console.log("CAT",e);
                     e.preventDefault();
                 }
             })
