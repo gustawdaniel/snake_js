@@ -106,6 +106,7 @@
 
     let game = {
         counter: 0,
+        state: 'paused', // paused, active
         direction: 'right', // right, left, up, down,
         timeout: undefined,
         run: function () {
@@ -114,15 +115,13 @@
         init: function () {
             this.counter = 0;
             this.direction = 'right';
+            this.state = 'paused';
+            $(".state").text(this.state.toUpperCase());
             map.init();
             snake.init();
-            this.timeout = setInterval(() => {
-                this.counter ++;
-                $('.counter').text(this.counter);
-                this.run();
-            },config.roundTime);
+
             document.addEventListener('keypress',(e) => {
-                console.log(e.key);
+                console.log({key: e.key, code: e.keyCode});
                 switch (e.key) {
                     case "ArrowUp":
                         this.direction = this.direction === "down" ? this.direction : "up"; break;
@@ -132,6 +131,16 @@
                         this.direction = this.direction === "right" ? this.direction : "left"; break;
                     case "ArrowRight":
                         this.direction = this.direction === "left" ? this.direction : "right"; break;
+                    case "Enter":
+                        if(this.state === 'paused') {
+                            this.state = 'active';
+                            $(".state").text(this.state.toUpperCase());
+                            this.timeout = setInterval(() => {
+                                this.counter ++;
+                                $('.counter').text(this.counter);
+                                this.run();
+                            },config.roundTime);
+                        }
                 }
             })
         },
