@@ -6,11 +6,19 @@ const rtc = {
     }
 };
 
+const html = {
+    disableConnectInput: function() {
+        channelInput.disabled = true;
+        createChannelBtn.disabled = true;
+        joinChannelBtn.disabled = true;
+    }
+};
+
 // Open a connection to Pusher
-var pusher = new Pusher("9dd2b3faceb5836a18ad", { cluster: "eu" });
+let pusher = new Pusher("9dd2b3faceb5836a18ad", { cluster: "eu" });
 
 // Storage of Pusher connection socket ID
-var socketId;
+let socketId;
 
 Pusher.log = m =>{ console.log(m); };
 
@@ -29,15 +37,16 @@ pusher.connection.bind("state_change", function(states) {
 
 
 // Initialise DataChannel.js
-var datachannel = new DataChannel();
+let datachannel = new DataChannel();
 
 // Set custom Pusher signalling channel
 // https://github.com/muaz-khan/WebRTC-Experiment/blob/master/Signaling.md
 datachannel.openSignalingChannel = function(config) {
-    var channel = config.channel || this.channel || "default-channel";
-    var xhrErrorCount = 0;
+    let channel = config.channel || this.channel || "default-channel";
+    console.log("CHANNEL", channel);
+    let xhrErrorCount = 0;
 
-    var socket = {
+    let socket = {
         send: function(message) {
             $.ajax({
                 type: "POST",
@@ -48,27 +57,18 @@ datachannel.openSignalingChannel = function(config) {
                     channel: channel,
                     message: message
                 },
-                timeout: 1000,
-                success: function(data) {
-                    xhrErrorCount = 0;
-                },
-                error: function(xhr, type) {
-                    // Increase XHR error count
-                    xhrErrorCount++;
-
-                    // Stop sending signaller messages if it's down
-                    if (xhrErrorCount > 5) {
-                        console.log("Disabling signaller due to connection failure");
-                        datachannel.transmitRoomOnce = true;
-                    }
-                }
-            });
+                timeout: 1000
+            }).done(data => {xhrErrorCount = 0;}).fail(xhr, type => {
+                if (++xhrErrorCount > 5) {
+                console.log("Disabling signaller due to connection failure");
+                datachannel.transmitRoomOnce = true;
+            }});
         },
         channel: channel
     };
 
     // Subscribe to Pusher signalling channel
-    var pusherChannel = pusher.subscribe(channel);
+    let pusherChannel = pusher.subscribe(channel);
 
     // Call callback on successful connection to Pusher signalling channel
     pusherChannel.bind("pusher:subscription_succeeded", function() {
@@ -83,50 +83,42 @@ datachannel.openSignalingChannel = function(config) {
     return socket;
 };
 
-var onCreateChannel = function() {
-    var channelName = cleanChannelName(channelInput.value);
+let onCreateChannel = function() {
+    let channelName = cleanChannelName(channelInput.value);
 
     if (!channelName) {
         console.log("No channel name given");
         return;
     }
 
-    disableConnectInput();
+    html.disableConnectInput();
 
     datachannel.open(channelName);
 };
 
-var onJoinChannel = function() {
-    var channelName = cleanChannelName(channelInput.value);
+let onJoinChannel = function() {
+    let channelName = cleanChannelName(channelInput.value);
 
     if (!channelName) {
         console.log("No channel name given");
         return;
     }
 
-    disableConnectInput();
+    html.disableConnectInput();
 
     // Search for existing data channels
     datachannel.connect(channelName);
 };
 
-var cleanChannelName = function(channel) {
+let cleanChannelName = function(channel) {
     return channel.replace(/(\W)+/g, "-").toLowerCase();
 };
 
-
-
-var disableConnectInput = function() {
-    channelInput.disabled = true;
-    createChannelBtn.disabled = true;
-    joinChannelBtn.disabled = true;
-};
-
 // Demo DOM elements
-var channelInput = document.querySelector(".demo-chat-channel-input");
-var createChannelBtn = document.querySelector(".demo-chat-create");
-var joinChannelBtn = document.querySelector(".demo-chat-join");
-var messageList = document.querySelector(".demo-chat-messages");
+let channelInput = document.querySelector(".demo-chat-channel-input");
+let createChannelBtn = document.querySelector(".demo-chat-create");
+let joinChannelBtn = document.querySelector(".demo-chat-join");
+let messageList = document.querySelector(".demo-chat-messages");
 let messageForm = document.querySelector('form.message');
 
 // Set up DOM listeners
