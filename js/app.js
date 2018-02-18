@@ -30,6 +30,10 @@
                 return apple.x !== toRemove.x && apple.y !== toRemove.y
             });
         },
+        outOfMap: function (inspected) {
+            return inspected.x < 0 || inspected.x >= map.width
+                || inspected.y < 0 || inspected.y >= map.height;
+        },
         init: function () {
             let mapDiv = $('#map');
             mapDiv.html("");
@@ -50,6 +54,7 @@
         init: function () {
             this.body = [{x:5,y:2},{x:4,y:2},{x:3,y:2}];
             this.points = 0;
+            $('.points').text(this.points);
             this.draw();
         },
         containsCoordinates: function (inspected) {
@@ -73,13 +78,17 @@
                 case "right":
                     head.y = head.y + 1; break;
             }
-            this.body.unshift(head);
-            $(`div.rect[data-x="${head.x}"][data-y="${head.y}"]`)
-                .css('background-color',config.snakeColor);
-            if(!this.eatApple()) {
-                let mapCoordinates  = this.body.pop();
-                $(`div.rect[data-x="${mapCoordinates.x}"][data-y="${mapCoordinates.y}"]`)
-                    .css('background-color',config.mapColor);
+            if (map.outOfMap(head) || this.containsCoordinates(head)) {
+                game.gameOver();
+            } else {
+                this.body.unshift(head);
+                $(`div.rect[data-x="${head.x}"][data-y="${head.y}"]`)
+                    .css('background-color', config.snakeColor);
+                if (!this.eatApple()) {
+                    let mapCoordinates = this.body.pop();
+                    $(`div.rect[data-x="${mapCoordinates.x}"][data-y="${mapCoordinates.y}"]`)
+                        .css('background-color', config.mapColor);
+                }
             }
         },
         eatApple: function () {
@@ -104,13 +113,11 @@
         },
         init: function () {
             this.counter = 0;
+            this.direction = 'right';
             map.init();
             snake.init();
             this.timeout = setInterval(() => {
                 this.counter ++;
-                if(this.counter === 6) {
-                    this.gameOver();
-                }
                 $('.counter').text(this.counter);
                 this.run();
             },config.roundTime);
@@ -141,5 +148,8 @@
 
     game.init();
 
-    
+    window.snake = snake;
+    window.map = map;
+    window.game = game;
+
 })();
