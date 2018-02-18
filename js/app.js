@@ -113,13 +113,7 @@
         run: function () {
             snake.move(this.direction);
         },
-        init: function () {
-            this.counter = 0;
-            this.direction = 'right';
-            this.state = 'paused';
-            $(".state").text(this.state.toUpperCase());
-            map.init();
-
+        setListeners: function () {
             document.addEventListener('keypress',(e) => {
                 console.log({key: e.key, code: e.keyCode});
                 switch (e.key) {
@@ -153,6 +147,17 @@
                 }
             })
         },
+        init: function () {
+            this.reset();
+            this.setListeners();
+        },
+        reset: function () {
+            this.counter = 0;
+            this.direction = 'right';
+            this.state = 'paused';
+            $(".state").text(this.state.toUpperCase());
+            map.init();
+        },
         logResult: function () {
             $('ul.history').prepend($(`<li>${performance.now().toFixed(2)} - ${snake.points} - ${this.counter} - ${(snake.points/this.counter).toFixed(4)}</li>`));
         },
@@ -160,7 +165,7 @@
             clearInterval(this.timeout);
             this.timeout = undefined;
             this.logResult();
-            this.init();
+            this.reset();
         }
     };
 
