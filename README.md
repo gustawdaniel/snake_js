@@ -11,3 +11,11 @@ To install dependencies
 To run
 
     node node_modules/http-server/bin/http-server 
+
+# Game
+
+To game run
+
+    firefox localhost:8080
+    
+Pres space to start and use arrows to control snake. 
