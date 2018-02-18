@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .demo-chat-messages:empty {
+            content: '<li class="list-group-item" data-remove="true">No chat messages available</li>';
+        }
+    </style>
+</head>
+<body>
+
+<!-- WebRTC demo -->
+<div class="demo">
+    <div class="demo-connect">
+        <input type="text" class="demo-chat-channel-input form-control" placeholder="Channel name">
+        <button class="demo-chat-create btn btn-primary">Create</button>
+        <button class="demo-chat-join btn btn-warning">Join</button>
+    </div>
+    <div class="demo-chat inactive">
+        <div class="demo-chat-input">
+            <form class="message">
+                <input name="message" placeholder="Message">
+            </form>
+        </div>
+        <ul class="demo-chat-messages list-group"></ul>
+    </div>
+</div>
+
+<!-- Zepto for AJAX -->
+<script src="node_modules/jquery/dist/jquery.min.js"></script>
+
+<!-- Pusher for WebRTC signalling -->
+<script src="//js.pusher.com/4.1/pusher.js"></script>
+
+<!-- DataChannel.js for WebRTC functionality -->
+<script src="//webrtc-experiment.com/DataChannel.js"></script>
+
+<!-- Our WebRTC application -->
+<script src="client.js"></script>
+
+<!-- Fill channel name -->
+<script>
+    function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+        return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+    var channel = getParameterByName("channel");
+    if (channel) {
+        document.querySelector(".demo-chat-channel-input").value = channel;
+    }
+</script>
+</body>
+</html>

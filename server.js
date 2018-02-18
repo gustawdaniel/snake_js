@@ -1,152 +1,88 @@
-//require our websocket library
-var WebSocketServer = require('ws').Server;
+var config;
+try {
+    config = require("./config.example");
+} catch(e) {
+    console.log("Failed to find local config, falling back to environment variables");
+    config = {
+        app_id: process.env.PUSHER_APP_ID,
+        key: process.env.PUSHER_APP_KEY,
+        secret: process.env.PUSHER_APP_SECRET,
+        cluster: process.env.PUSHER_APP_CLUSTER,
+    }
+}
 
-//creating a websocket server at port 9090
-var wss = new WebSocketServer({port: 9090});
+var express = require("express");
+var bodyParser = require("body-parser");
+var errorHandler = require("errorhandler");
 
-//all connected to the server users
-var users = {};
+var app = express();
+var root = __dirname + "/../..";
 
-//when a user connects to our sever
-wss.on('connection', function(connection) {
-
-    console.log("User connected");
-
-    //when server gets a message from a connected user
-    connection.on('message', function(message) {
-
-        var data;
-        //accepting only JSON messages
-        try {
-            data = JSON.parse(message);
-        } catch (e) {
-            console.log("Invalid JSON");
-            data = {};
-        }
-
-        //switching type of the user message
-        switch (data.type) {
-            //when a user tries to login
-
-            case "login":
-                console.log("User logged", data.name);
-
-                //if anyone is logged in with this username then refuse
-                if(users[data.name]) {
-                    sendTo(connection, {
-                        type: "login",
-                        success: false
-                    });
-                } else {
-                    //save user connection on the server
-                    users[data.name] = connection;
-                    connection.name = data.name;
-
-                    sendTo(connection, {
-                        type: "login",
-                        success: true
-                    });
-                }
-
-                break;
-
-            case "offer":
-                //for ex. UserA wants to call UserB
-                console.log("Sending offer to: ", data.name);
-
-                //if UserB exists then send him offer details
-                var conn = users[data.name];
-
-                if(conn != null) {
-                    //setting that UserA connected with UserB
-                    connection.otherName = data.name;
-
-                    sendTo(conn, {
-                        type: "offer",
-                        offer: data.offer,
-                        name: connection.name
-                    });
-                }
-
-                break;
-
-            case "answer":
-                console.log("Sending answer to: ", data.name);
-                //for ex. UserB answers UserA
-                var conn = users[data.name];
-
-                if(conn != null) {
-                    connection.otherName = data.name;
-                    sendTo(conn, {
-                        type: "answer",
-                        answer: data.answer
-                    });
-                }
-
-                break;
-
-            case "candidate":
-                console.log("Sending candidate to:",data.name);
-                var conn = users[data.name];
-
-                if(conn != null) {
-                    sendTo(conn, {
-                        type: "candidate",
-                        candidate: data.candidate
-                    });
-                }
-
-                break;
-
-            case "leave":
-                console.log("Disconnecting from", data.name);
-                var conn = users[data.name];
-                conn.otherName = null;
-
-                //notify the other user so he can disconnect his peer connection
-                if(conn != null) {
-                    sendTo(conn, {
-                        type: "leave"
-                    });
-                }
-
-                break;
-
-            default:
-                sendTo(connection, {
-                    type: "error",
-                    message: "Command not found: " + data.type
-                });
-
-                break;
-        }
-    });
-
-    //when user exits, for example closes a browser window
-    //this may help if we are still in "offer","answer" or "candidate" state
-    connection.on("close", function() {
-
-        if(connection.name) {
-            delete users[connection.name];
-
-            if(connection.otherName) {
-                console.log("Disconnecting from ", connection.otherName);
-                var conn = users[connection.otherName];
-                conn.otherName = null;
-
-                if(conn != null) {
-                    sendTo(conn, {
-                        type: "leave"
-                    });
-                }
-            }
-        }
-    });
-
-    // connection.send("Hello world");
-
+// --------------------------------------------------------------------
+// SET UP PUSHER
+// --------------------------------------------------------------------
+var Pusher = require("pusher");
+console.log(config.app_id);
+var pusher = new Pusher({
+    appId: config.app_id,
+    key: config.key,
+    secret: config.secret,
+    cluster: config.cluster
 });
 
-function sendTo(connection, message) {
-    connection.send(JSON.stringify(message));
+var pusherCallback = function(err, req, res){
+    if(err){
+        console.log("Pusher error:", err.message);
+        console.log(err.stack);
+    }
 }
+
+// --------------------------------------------------------------------
+// SET UP EXPRESS
+// --------------------------------------------------------------------
+
+// Parse application/json and application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
+
+// Simple logger
+app.use(function(req, res, next){
+    console.log("%s %s", req.method, req.url);
+    console.log(req.body);
+    next();
+});
+
+// Error handler
+app.use(errorHandler({
+    dumpExceptions: true,
+    showStack: true
+}));
+
+// Serve static files from directory
+app.use(express.static(root));
+
+// Basic protection on _servers content
+app.get("/_servers", function(req, res) {
+    res.send(404);
+});
+
+// Message proxy
+app.post("/message", function(req, res) {
+    // TODO: Check for valid POST data
+
+    var socketId = req.body.socketId;
+    var channel = req.body.channel;
+    var message = req.body.message;
+
+    pusher.trigger(channel, "message", message, socketId, pusherCallback);
+
+    res.send(200);
+});
+
+// Open server on specified port
+var port = process.env.PORT || 5001;
+app.listen(port, function(){
+    console.log("Application listening on Port:", port);
+});

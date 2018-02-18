@@ -1,25 +1,22 @@
-<html lang = "en">
+<!DOCTYPE html>
+<html>
 <head>
-    <meta charset = "utf-8" />
+    <title>Pusher WebRTC Chat Demo - Frameset</title>
+
+    <script>
+        var frameLoad = function() {
+            var chat1 = document.getElementById("chat-1");
+            var chat2 = document.getElementById("chat-2");
+            var channelName = "my-chat-room-" + Math.round(Math.random() * 9999);
+            chat1.src = "/chat.html?channel=" + channelName;
+            chat2.src = "/chat.html?channel=" + channelName;
+        };
+    </script>
 </head>
 
-<body>
-<div>
-    <input type = "text" id = "loginInput" />
-    <button id = "loginBtn">Login</button>
-</div>
-
-<div>
-    <input type = "text" id = "otherUsernameInput" />
-    <button id = "connectToOtherUsernameBtn">Establish connection</button>
-</div>
-
-<div>
-    <input type = "text" id = "msgInput" />
-    <button id = "sendMsgBtn">Send text message</button>
-</div>
-
-<script src = "client.js"></script>
-</body>
+<frameset onload="frameLoad();" cols="50%,50%">
+    <frame id="chat-1"/>
+    <frame id="chat-2"/>
+</frameset>
 
 </html>

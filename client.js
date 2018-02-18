@@ -1,178 +1,159 @@
-var connection = new WebSocket('ws://localhost:9090');
-var name = "";
+// global object
 
-var loginInput = document.querySelector('#loginInput');
-var loginBtn = document.querySelector('#loginBtn');
+const rtc = {
+    addMessage: function(message, userId, self) {
+        $(messageList).prepend($(`<li><span class='badge'>${self ? "you" : userId}</span><p>${message}</p></li>`));
+    }
+};
 
-var otherUsernameInput = document.querySelector('#otherUsernameInput');
-var connectToOtherUsernameBtn = document.querySelector('#connectToOtherUsernameBtn');
-var msgInput = document.querySelector('#msgInput');
-var sendMsgBtn = document.querySelector('#sendMsgBtn');
-var connectedUser, myConnection, dataChannel;
+// Open a connection to Pusher
+var pusher = new Pusher("9dd2b3faceb5836a18ad", { cluster: "eu" });
 
-//when a user clicks the login button
-loginBtn.addEventListener("click", function(event) {
-    name = loginInput.value;
+// Storage of Pusher connection socket ID
+var socketId;
 
-    if(name.length > 0) {
-        send({
-            type: "login",
-            name: name
-        });
+Pusher.log = m =>{ console.log(m); };
+
+// Monitor Pusher connection state
+pusher.connection.bind("state_change", function(states) {
+    switch (states.current) {
+        case "connected":
+            socketId = pusher.connection.socket_id;
+            break;
+        case "disconnected":
+        case "failed":
+        case "unavailable":
+            break;
     }
 });
 
-//handle messages from the server
-connection.onmessage = function (message) {
-    console.log("Got message", message.data);
 
+// Initialise DataChannel.js
+var datachannel = new DataChannel();
 
+// Set custom Pusher signalling channel
+// https://github.com/muaz-khan/WebRTC-Experiment/blob/master/Signaling.md
+datachannel.openSignalingChannel = function(config) {
+    var channel = config.channel || this.channel || "default-channel";
+    var xhrErrorCount = 0;
 
-    var data = JSON.parse(message.data);
+    var socket = {
+        send: function(message) {
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:5001/message", // Node.js & Ruby (Sinatra)
+                // url: "_servers/php/message.php", // PHP
+                data: {
+                    socketId: socketId,
+                    channel: channel,
+                    message: message
+                },
+                timeout: 1000,
+                success: function(data) {
+                    xhrErrorCount = 0;
+                },
+                error: function(xhr, type) {
+                    // Increase XHR error count
+                    xhrErrorCount++;
 
-    switch(data.type) {
-        case "login":
-            onLogin(data.success);
-            break;
-        case "offer":
-            onOffer(data.offer, data.name);
-            break;
-        case "answer":
-            onAnswer(data.answer);
-            break;
-        case "candidate":
-            onCandidate(data.candidate);
-            break;
-        default:
-            break;
-    }
-};
-
-//when a user logs in
-function onLogin(success) {
-
-    if (success === false) {
-        alert("oops...try a different username");
-    } else {
-        //creating our RTCPeerConnection object
-        var configuration = {
-            "iceServers": [{ "urls": "stun:stun.1.google.com:19302" }]
-        };
-
-        myConnection = new RTCPeerConnection(configuration, {
-            optional: [{RtpDataChannels: true}]
-        });
-
-        console.log("RTCPeerConnection object was created");
-        console.log(myConnection);
-
-        //setup ice handling
-        //when the browser finds an ice candidate we send it to another peer
-        myConnection.onicecandidate = function (event) {
-
-            if (event.candidate) {
-                send({
-                    type: "candidate",
-                    candidate: event.candidate
-                });
-            }
-        };
-
-        openDataChannel();
-
-    }
-};
-
-connection.onopen = function () {
-    console.log("Connected");
-};
-
-connection.onerror = function (err) {
-    console.log("Got error", err);
-};
-
-// Alias for sending messages in JSON format
-function send(message) {
-    if (connectedUser) {
-        message.name = connectedUser;
-    }
-
-    connection.send(JSON.stringify(message));
-};
-
-//setup a peer connection with another user
-connectToOtherUsernameBtn.addEventListener("click", function () {
-
-    var otherUsername = otherUsernameInput.value;
-    connectedUser = otherUsername;
-
-    if (otherUsername.length > 0) {
-        //make an offer
-        myConnection.createOffer(function (offer) {
-            console.log();
-
-            send({
-                type: "offer",
-                offer: offer
+                    // Stop sending signaller messages if it's down
+                    if (xhrErrorCount > 5) {
+                        console.log("Disabling signaller due to connection failure");
+                        datachannel.transmitRoomOnce = true;
+                    }
+                }
             });
+        },
+        channel: channel
+    };
 
-            myConnection.setLocalDescription(offer);
-        }, function (error) {
-            alert("An error has occurred.");
-        });
-    }
-});
+    // Subscribe to Pusher signalling channel
+    var pusherChannel = pusher.subscribe(channel);
 
-//when somebody wants to call us
-function onOffer(offer, name) {
-    connectedUser = name;
-    myConnection.setRemoteDescription(new RTCSessionDescription(offer));
-
-    myConnection.createAnswer(function (answer) {
-        myConnection.setLocalDescription(answer);
-
-        send({
-            type: "answer",
-            answer: answer
-        });
-
-    }, function (error) {
-        alert("oops...error");
+    // Call callback on successful connection to Pusher signalling channel
+    pusherChannel.bind("pusher:subscription_succeeded", function() {
+        if (config.callback) config.callback(socket);
     });
-}
 
-//when another user answers to our offer
-function onAnswer(answer) {
-    myConnection.setRemoteDescription(new RTCSessionDescription(answer));
-}
+    // Proxy Pusher signaller messages to DataChannel
+    pusherChannel.bind("message", function(message) {
+        config.onmessage(message);
+    });
 
-//when we got ice candidate from another user
-function onCandidate(candidate) {
-    myConnection.addIceCandidate(new RTCIceCandidate(candidate));
-}
+    return socket;
+};
 
-//creating data channel
-function openDataChannel() {
+var onCreateChannel = function() {
+    var channelName = cleanChannelName(channelInput.value);
 
-    var dataChannelOptions = {
-        reliable:true
-    };
+    if (!channelName) {
+        console.log("No channel name given");
+        return;
+    }
 
-    dataChannel = myConnection.createDataChannel("myDataChannel", dataChannelOptions);
+    disableConnectInput();
 
-    dataChannel.onerror = function (error) {
-        console.log("Error:", error);
-    };
+    datachannel.open(channelName);
+};
 
-    console.log("DATA CHANNEL OPEN");
-    dataChannel.onmessage = function (event) {
-        console.log("Got message:", event.data);
-    };
-}
+var onJoinChannel = function() {
+    var channelName = cleanChannelName(channelInput.value);
 
-//when a user clicks the send message button
-sendMsgBtn.addEventListener("click", function (event) {
-    var val = msgInput.value;
-    console.log("send message ",val,event);
-    dataChannel.send(val);
+    if (!channelName) {
+        console.log("No channel name given");
+        return;
+    }
+
+    disableConnectInput();
+
+    // Search for existing data channels
+    datachannel.connect(channelName);
+};
+
+var cleanChannelName = function(channel) {
+    return channel.replace(/(\W)+/g, "-").toLowerCase();
+};
+
+
+
+var disableConnectInput = function() {
+    channelInput.disabled = true;
+    createChannelBtn.disabled = true;
+    joinChannelBtn.disabled = true;
+};
+
+// Demo DOM elements
+var channelInput = document.querySelector(".demo-chat-channel-input");
+var createChannelBtn = document.querySelector(".demo-chat-create");
+var joinChannelBtn = document.querySelector(".demo-chat-join");
+var messageList = document.querySelector(".demo-chat-messages");
+let messageForm = document.querySelector('form.message');
+
+// Set up DOM listeners
+createChannelBtn.addEventListener("click", onCreateChannel);
+joinChannelBtn.addEventListener("click", onJoinChannel);
+
+messageForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    let message = e.target.message.value;
+
+    if (!message) {
+        console.log("No message given");
+        return;
+    }
+
+    datachannel.send(message);
+    rtc.addMessage(message, window.userid, true);
+
+    e.target.reset();
 });
+
+// Set up DataChannel handlers
+datachannel.onopen = function (userId) {
+    document.querySelector(".demo-connect").classList.add("inactive");
+    document.querySelector(".demo-chat").classList.remove("inactive");
+};
+
+datachannel.onmessage = function (message, userId) {
+    rtc.addMessage(message, userId);
+};
