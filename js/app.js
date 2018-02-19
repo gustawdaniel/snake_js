@@ -39,7 +39,7 @@
             mapDiv.html("");
             for(let i=0; i<this.width; i++) {
                 let rowDiv =$('<div>', {class: "row"});
-                for(let j=0; j<this.width; j++) {
+                for(let j=0; j<this.height; j++) {
                     rowDiv.append($('<div>',{class:"rect", "data-x":i, "data-y":j}));
                 }
                 mapDiv.append(rowDiv);
