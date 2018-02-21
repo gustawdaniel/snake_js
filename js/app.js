@@ -10,7 +10,7 @@
         height: config.mapHeight,
         init: function () {
             let mapDiv = $('#map');
-            for(let i=0; i<this.width; i++) {
+            for(let i=0; i<this.height; i++) {
                 console.log(i);
                 let rowDiv =$('<div>', {class: "row"});
                 console.log(rowDiv);
