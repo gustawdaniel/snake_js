@@ -1,0 +1,36 @@
+.rect {
+    width: 30px;
+    height: 30px;
+    background-color: #dca6d1;
+    display: inline-block;
+    margin: 2px;
+    /*border-radius: 4px;*/
+    /*border: solid 1px #dc6f91;*/
+}
+
+footer {
+    padding-top: 3vh;
+}
+
+.info {
+    border: 1px solid black;
+    padding: 7px;
+    text-align: center;
+}
+
+.points {
+    float: left;
+}
+
+.counter {
+    float: right;
+}
+
+footer ul.history:not(:empty) {
+    border: 1px solid black;
+    padding: 7px;
+}
+
+footer ul.history li {
+    list-style: none;
+}
