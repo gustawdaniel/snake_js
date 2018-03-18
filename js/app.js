@@ -1,4 +1,6 @@
-(function () {
+(function ($) {
+
+    console.log($);
 
     const config = {
         mapWidth: 10,
@@ -6,7 +8,7 @@
         snakeColor: "#8165f3",
         mapColor: "#dca6d1",
         appleColor: "#97dcd5",
-        roundTime: 500
+        roundTime: 200
     };
 
     let map = {
@@ -115,7 +117,7 @@
             snake.move(this.direction);
         },
         setListeners: function () {
-            document.addEventListener('keypress',(e) => {
+            document.addEventListener('keydown',(e) => {
                 console.log({key: e.key, code: e.keyCode});
                 switch (e.key) {
                     case "ArrowUp":
@@ -176,4 +178,4 @@
     window.map = map;
     window.game = game;
 
-})();
+})(Zepto);
