@@ -6,7 +6,7 @@ Snake game written in javascript using objects.
 
 To install dependencies
 
-    yarn install
+    yarn
 
 To run
 

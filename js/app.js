@@ -5,7 +5,7 @@
         mapHeight: 10,
         snakeColor: "#8165f3",
         mapColor: "#dca6d1",
-        appleColor: "#dc5c61",
+        appleColor: "#97dcd5",
         roundTime: 500
     };
 
@@ -37,7 +37,8 @@
         init: function () {
             let mapDiv = $('#map');
             mapDiv.html("");
-            for(let i=0; i<this.width; i++) {
+            for(let i=0; i<this.height; i++) {
+                console.log(i);
                 let rowDiv =$('<div>', {class: "row"});
                 for(let j=0; j<this.height; j++) {
                     rowDiv.append($('<div>',{class:"rect", "data-x":i, "data-y":j}));
