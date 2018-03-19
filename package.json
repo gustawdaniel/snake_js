@@ -6,7 +6,7 @@
   "author": "Daniel Gustaw <gustaw.daniel@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "http-server": "^0.11.1",
+    "live-server": "^1.2.0",
     "zepto": "^1.2.0"
   }
 }
