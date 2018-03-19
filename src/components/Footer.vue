@@ -17,8 +17,8 @@
         <h5>v0.3</h5>
         <ol>
             <li style="text-decoration: line-through">Add webpack</li>
-            <li>Create snake as module</li>
-            <li>Add two players</li>
+            <li style="text-decoration: line-through">Create snake as module</li>
+            <li style="text-decoration: line-through">Add two players</li>
         </ol>
         <h5>Future (proposed)</h5>
         <ol>

@@ -1,7 +1,7 @@
 <template>
     <div id="map" v-if="show">
-        <div v-for="i in range()" class="row">
-            <div v-for="j in range()" class="rect" :data-x="i" :data-y="j"></div>
+        <div v-for="i in range('rows')" class="row">
+            <div v-for="j in range('cols')" class="rect" :class="isOutMap(j)" :data-x="i" :data-y="j"></div>
         </div>
     </div>
 </template>
@@ -16,8 +16,17 @@
             return {show:true}
         },
         methods: {
+            isOutMap(j) {
+                return j<0 || j>=10 ? "out-map" : "";
+            },
             range(direction) {
-               return (new Array(10)).fill(1).map((e, i)=>{return i})
+                if(direction === 'rows') {
+                    return (new Array(10)).fill(1).map((e, i)=>{return i})
+                } else if(direction === 'cols') {
+                    return (new Array(10+6)).fill(1).map((e, i)=>{return i-3})
+                } else {
+                    throw new Error("not known direction, possible: rows and cols");
+                }
             },
             rerender(){
                 this.show = false;
