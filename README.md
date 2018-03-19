@@ -10,7 +10,7 @@ To install dependencies
 
 To run
 
-    node node_modules/http-server/bin/http-server 
+    node index.js   
 
 # Game
 

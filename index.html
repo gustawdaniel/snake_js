@@ -55,6 +55,15 @@
     <script src="node_modules/socket.io-client/dist/socket.io.js"></script>
     <script>
         var socket = io();
+
+        document.addEventListener('keydown', function (e) {
+            socket.emit('keydown', e.key);
+        });
+
+        socket.on('hi', function(msg){
+            console.log("HI",msg);
+        });
+
     </script>
 
 </body>
