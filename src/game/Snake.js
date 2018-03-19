@@ -27,11 +27,9 @@ export default class Snake {
     }
 
     draw() {
-        setTimeout(() => {
-            this.body.forEach((part) => {
-                document.querySelector(`div.rect[data-x="${part.x}"][data-y="${part.y}"]`).classList.add(`snake-${this.index}`);
-            })
-        },500);
+        this.body.forEach((part) => {
+            document.querySelector(`div.rect[data-x="${part.x}"][data-y="${part.y}"]`).classList.add(`snake-${this.index}`);
+        })
     }
 
     move(direction) {

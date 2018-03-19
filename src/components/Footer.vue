@@ -2,25 +2,15 @@
     <footer>
         <hr>
         <h4>TODO:</h4>
-        <h5>v0.1</h5>
+
         <ol>
-            <li style="text-decoration: line-through">Add map</li>
-            <li style="text-decoration: line-through">Add snake</li>
-            <li style="text-decoration: line-through">Add events</li>
+            <li style="text-decoration: line-through">Fix pausing</li>
+            <li>Show apple after start</li>
+            <li>Correct current scores by vue interface</li>
+            <li>Correct scores logging by vue interface</li>
         </ol>
-        <h5>v0.2</h5>
-        <ol>
-            <li style="text-decoration: line-through">Add apples</li>
-            <li style="text-decoration: line-through">Add boundaries</li>
-            <li style="text-decoration: line-through">Add scores</li>
-        </ol>
-        <h5>v0.3</h5>
-        <ol>
-            <li style="text-decoration: line-through">Add webpack</li>
-            <li style="text-decoration: line-through">Create snake as module</li>
-            <li style="text-decoration: line-through">Add two players</li>
-        </ol>
-        <h5>Future (proposed)</h5>
+
+        <h4>Future (proposed)</h4>
         <ol>
             <li>Add bad apples</li>
             <li>Add network gaming</li>
@@ -33,6 +23,25 @@
             <li>Fix bug connected with changes direction many time in one round that allow bump int snake with length 3</li>
             <li>Add login by google</li>
             <li>Make it mobile friendly</li>
+        </ol>
+        <h4>Change Log</h4>
+        <h5>v0.3</h5>
+        <ol>
+            <li style="text-decoration: line-through">Add webpack</li>
+            <li style="text-decoration: line-through">Create snake as module</li>
+            <li style="text-decoration: line-through">Add two players</li>
+        </ol>
+        <h5>v0.2</h5>
+        <ol>
+            <li style="text-decoration: line-through">Add apples</li>
+            <li style="text-decoration: line-through">Add boundaries</li>
+            <li style="text-decoration: line-through">Add scores</li>
+        </ol>
+        <h5>v0.1</h5>
+        <ol>
+            <li style="text-decoration: line-through">Add map</li>
+            <li style="text-decoration: line-through">Add snake</li>
+            <li style="text-decoration: line-through">Add events</li>
         </ol>
     </footer>
 </template>

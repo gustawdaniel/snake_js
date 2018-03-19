@@ -1,7 +1,7 @@
 <template>
     <div id="map" v-if="show">
         <div v-for="i in range('rows')" class="row">
-            <div v-for="j in range('cols')" class="rect" :class="isOutMap(j)" :data-x="i" :data-y="j"></div>
+            <div v-for="j in range('cols')" class="rect" :class="isOutMap(j)" :data-x="i" :data-y="j" :ref="cordsToIndex(i,j)"></div>
         </div>
     </div>
 </template>
@@ -9,13 +9,25 @@
 <script>
 
     import Event from '../../Event';
+    import game from '../../game/Game';
 
     export default {
         name: "Board",
         data() {
-            return {show:true}
+            return { show:true, game: game }
+        },
+        computed: {
+            apples() {
+                return this.game.map.apples;
+            }
         },
         methods: {
+            indexToCords(index) {
+                return { x: index.splice("_")[0], y: index.splice("_")[1] };
+            },
+            cordsToIndex(i, j) {
+                return `${i}_${j}`;
+            },
             isOutMap(j) {
                 return j<0 || j>=10 ? "out-map" : "";
             },
@@ -43,6 +55,13 @@
             Event.$on("reset_map", () => {
                 this.rerender();
             });
+        },
+        watch: {
+            apples: function(n, o) {
+//                console.log("APPLES", n, o, this.cordsToIndex(o[0].x,o[0].y), this.$refs[this.cordsToIndex(o[0].x,o[0].y)]);
+                o.forEach(a => this.$refs[this.cordsToIndex(a.x,a.y)][0].classList.remove('apple'));
+                n.forEach(a => this.$refs[this.cordsToIndex(a.x,a.y)][0].classList.add('apple'));
+            }
         }
     }
 </script>

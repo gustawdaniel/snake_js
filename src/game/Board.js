@@ -17,13 +17,11 @@ export default class Board {
            this.addApple();
        } else {
            this.apples.push(apple);
-           document.querySelector(`div.rect[data-x="${apple.x}"][data-y="${apple.y}"]`).classList.add('apple');
        }
     }
 
     removeApple(toRemove) {
 
-        document.querySelector(`div.rect[data-x="${toRemove.x}"][data-y="${toRemove.y}"]`).classList.remove('apple')
         this.apples = this.apples.filter((apple) => {
             return apple.x !== toRemove.x && apple.y !== toRemove.y
         });
@@ -48,7 +46,6 @@ export default class Board {
     }
 
     init() {
-        Event.$emit('reset_map');
         console.log(game.snakes[0]);
         game.snakes[0].init();
         game.snakes[1].init();

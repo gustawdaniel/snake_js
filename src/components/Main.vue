@@ -13,9 +13,7 @@
     import Results from './main/Results.vue'
     import Event from '../Event';
 
-//    import Snake from '../game/Snake';
     import game from '../game/Game';
-//    import map from '../game/Board';
     import config from '../game/Config';
 
     export default {
@@ -33,7 +31,7 @@
         },
         created() {
             window.addEventListener('keydown', (e) => {
-                console.log({key: e.key, code: e.keyCode});
+                console.log({key: e.key, code: e.keyCode, "ok":"ok"});
                 switch (e.key) {
                     case "ArrowUp":
                         game.snakes[0].direction = game.snakes[0].direction === "down" || game.state === "paused" ? game.snakes[0].direction : "up"; break;
@@ -55,15 +53,15 @@
                         if(game.state === 'paused') {
                             game.state = 'active';
                             document.querySelector(".state").innerText = game.state.toUpperCase();
-                            game.timeout = setInterval(() => {
+                            game.timeout = game.timeout || setInterval(() => {
                                 game.counter ++;
                                 document.querySelector('.counter').innerText = game.counter;
                                 game.run();
                             },config.roundTime);
                         } else {
-                            this.state = 'paused';
+                            game.state = 'paused';
                             document.querySelector(".state").textContent = game.state.toUpperCase();
-                            clearInterval(this.timeout);
+                            clearInterval(game.timeout);
                             game.timeout = undefined;
                         }
                 }
