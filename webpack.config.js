@@ -36,10 +36,6 @@ module.exports = {
                 options: {
                     name: '[name].[ext]?[hash]'
                 }
-            },
-            {
-                test: require.resolve('zepto'),
-                use: 'imports-loader?this=>window',
             }
         ]
     },

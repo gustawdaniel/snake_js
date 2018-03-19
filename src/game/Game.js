@@ -20,10 +20,13 @@ export default {
         this.counter = 0;
         this.direction = 'right';
         this.state = 'paused';
-        $(".state").text(this.state.toUpperCase());
+        document.querySelector(".state").innerText = this.state.toUpperCase();
         this.map.init();
     },
     logResult: function () {
-        $('ul.history').prepend($(`<li>${performance.now().toFixed(2)} - ${this.snakes[0].points} / ${this.snakes[1].points} - ${this.counter} - ${(this.snakes[0].points/this.counter).toFixed(4)} / ${(this.snakes[1].points/this.counter).toFixed(4)}</li>`));
+        const el = document.querySelector('ul.history');
+
+        el.innerHTML = `<li>${performance.now().toFixed(2)} - ${this.snakes[0].points} / ${this.snakes[1].points} - ${this.counter} - ${(this.snakes[0].points/this.counter).toFixed(4)} / ${(this.snakes[1].points/this.counter).toFixed(4)}</li>`
+                        + el.innerHTML;
     }
 };

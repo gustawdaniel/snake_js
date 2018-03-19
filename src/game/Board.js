@@ -17,13 +17,13 @@ export default class Board {
            this.addApple();
        } else {
            this.apples.push(apple);
-           $(`div.rect[data-x="${apple.x}"][data-y="${apple.y}"]`).addClass('apple');
+           document.querySelector(`div.rect[data-x="${apple.x}"][data-y="${apple.y}"]`).classList.add('apple');
        }
     }
 
     removeApple(toRemove) {
 
-        $(`div.rect[data-x="${toRemove.x}"][data-y="${toRemove.y}"]`).removeClass('apple')
+        document.querySelector(`div.rect[data-x="${toRemove.x}"][data-y="${toRemove.y}"]`).classList.remove('apple')
         this.apples = this.apples.filter((apple) => {
             return apple.x !== toRemove.x && apple.y !== toRemove.y
         });
@@ -41,7 +41,9 @@ export default class Board {
 
     clearPositions(positions) {
         positions.forEach(position => {
-            $(`div.rect[data-x="${position.x}"][data-y="${position.y}"]`).removeClass('snake-0').removeClass('snake-1');
+            const el = document.querySelector(`div.rect[data-x="${position.x}"][data-y="${position.y}"]`);
+            el.classList.remove('snake-0');
+            el.classList.remove('snake-1');
         });
     }
 

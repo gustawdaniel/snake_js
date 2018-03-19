@@ -17,7 +17,7 @@ export default class Snake {
     }
 
     init() {
-        $('.points').text(this.points);
+        document.querySelector('.points').innerText = this.points;
         this.draw();
     }
 
@@ -29,7 +29,7 @@ export default class Snake {
     draw() {
         setTimeout(() => {
             this.body.forEach((part) => {
-                $(`div.rect[data-x="${part.x}"][data-y="${part.y}"]`).addClass(`snake-${this.index}`);
+                document.querySelector(`div.rect[data-x="${part.x}"][data-y="${part.y}"]`).classList.add(`snake-${this.index}`);
             })
         },500);
     }
@@ -52,11 +52,11 @@ export default class Snake {
             if(!this.inGame && !Board.outOfMap(head)) { this.inGame = true; }
 
             this.body.unshift(head);
-            $(`div.rect[data-x="${head.x}"][data-y="${head.y}"]`).addClass(`snake-${this.index}`);
+            document.querySelector(`div.rect[data-x="${head.x}"][data-y="${head.y}"]`).classList.add(`snake-${this.index}`);
             if (!this.eatApple()) {
                 let mapCoordinates = this.body.pop();
-                $(`div.rect[data-x="${mapCoordinates.x}"][data-y="${mapCoordinates.y}"]`)
-                    .removeClass(`snake-${this.index}`);
+                document.querySelector(`div.rect[data-x="${mapCoordinates.x}"][data-y="${mapCoordinates.y}"]`)
+                    .classList.remove(`snake-${this.index}`);
             }
         }
     }
@@ -67,7 +67,7 @@ export default class Snake {
         ) {
 
             this.points ++;
-            $('.points').text(this.points);
+            document.querySelector('.points').innerText = this.points.toFixed(0);
             game.map.removeApple(this.body[0]);
             game.map.addApple();
             return true;
@@ -75,13 +75,13 @@ export default class Snake {
     }
 
     gameOver() {
-        game.map.clearPositions(this.body)
+        game.map.clearPositions(this.body);
         this.age = 0;
         this.inGame = false;
         this.body = this.initialConfig.body.slice(); // fastest way of cloning array https://stackoverflow.com/questions/3978492/javascript-fastest-way-to-duplicate-an-array-slice-vs-for-loop
         this.direction =  this.initialConfig.direction;
         // this.logResult();
         // this.reset();
-        this.body.forEach(el => $(`div.rect[data-x="${el.x}"][data-y="${el.y}"]`).addClass(`snake-${this.index}`));
+        this.body.forEach(el => document.querySelector(`div.rect[data-x="${el.x}"][data-y="${el.y}"]`).classList.add(`snake-${this.index}`));
     }
 };

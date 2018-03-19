@@ -8,7 +8,6 @@
 
 <script>
 
-    import Zepto from 'zepto'
     import State from './main/State.vue'
     import Board from './main/Board.vue'
     import Results from './main/Results.vue'
@@ -27,11 +26,7 @@
             }
         },
         mounted() {
-            (function ($) {
-
-                game.init();
-
-            })(Zepto);
+            game.init();
         },
         components: {
             State, Board, Results
@@ -59,15 +54,15 @@
                     case " ":
                         if(game.state === 'paused') {
                             game.state = 'active';
-                            $(".state").text(game.state.toUpperCase());
+                            document.querySelector(".state").innerText = game.state.toUpperCase();
                             game.timeout = setInterval(() => {
                                 game.counter ++;
-                                $('.counter').text(game.counter);
+                                document.querySelector('.counter').innerText = game.counter;
                                 game.run();
                             },config.roundTime);
                         } else {
                             this.state = 'paused';
-                            $(".state").text(game.state.toUpperCase());
+                            document.querySelector(".state").textContent = game.state.toUpperCase();
                             clearInterval(this.timeout);
                             game.timeout = undefined;
                         }
