@@ -1,15 +1,6 @@
 <template>
     <footer>
         <hr>
-        <h4>TODO:</h4>
-
-        <ol>
-            <li style="text-decoration: line-through">Fix pausing</li>
-            <li style="text-decoration: line-through">Show apple after start</li>
-            <li style="text-decoration: line-through">Correct current scores by vue interface</li>
-            <li>Correct scores logging by vue interface</li>
-        </ol>
-
         <h4>Future (proposed)</h4>
         <ol>
             <li>Add bad apples</li>

@@ -22,11 +22,5 @@ export default {
         this.direction = 'right';
         this.state = 'paused';
         this.map.init();
-    },
-    logResult: function () {
-        const el = document.querySelector('ul.history');
-
-        el.innerHTML = `<li>${performance.now().toFixed(2)} - ${this.snakes[0].points} / ${this.snakes[1].points} - ${this.counter} - ${(this.snakes[0].points/this.counter).toFixed(4)} / ${(this.snakes[1].points/this.counter).toFixed(4)}</li>`
-                        + el.innerHTML;
     }
 };

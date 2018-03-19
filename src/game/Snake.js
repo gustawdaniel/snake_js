@@ -13,7 +13,8 @@ export default class Snake {
         this.initialConfig = {
             body: body.slice(),
             direction: direction
-        }
+        };
+        this.logs = [];
     }
 
     init() {
@@ -72,12 +73,25 @@ export default class Snake {
 
     gameOver() {
         game.map.clearPositions(this.body);
+        this.logResult();
         this.age = 0;
         this.points = 0;
         this.inGame = false;
         this.body = this.initialConfig.body.slice(); // fastest way of cloning array https://stackoverflow.com/questions/3978492/javascript-fastest-way-to-duplicate-an-array-slice-vs-for-loop
         this.direction =  this.initialConfig.direction;
-        // this.logResult();
+
         this.body.forEach(el => document.querySelector(`div.rect[data-x="${el.x}"][data-y="${el.y}"]`).classList.add(`snake-${this.index}`));
+    }
+
+    logResult() {
+
+        if(this.inGame) {
+            this.logs.unshift({
+                now: performance.now().toFixed(2),
+                points: this.points,
+                age: this.age,
+                counter: game.counter
+            });
+        }
     }
 };

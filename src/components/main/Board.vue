@@ -58,7 +58,6 @@
         },
         watch: {
             apples: function(n, o) {
-//                console.log("APPLES", n, o, this.cordsToIndex(o[0].x,o[0].y), this.$refs[this.cordsToIndex(o[0].x,o[0].y)]);
                 o.forEach(a => this.$refs[this.cordsToIndex(a.x,a.y)][0].classList.remove('apple'));
                 n.forEach(a => this.$refs[this.cordsToIndex(a.x,a.y)][0].classList.add('apple'));
             }

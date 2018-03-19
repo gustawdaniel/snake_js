@@ -32,12 +32,27 @@
     display: flex;
 }
 
-main ul.history:not(:empty) {
-    border: 1px solid black;
-    padding: 7px;
-    margin-top: 2vh;
+main .logs {
+    display: flex;
+    justify-content: space-evenly;
 }
 
-main ul.history li {
-    list-style: none;
+main .logs tr.best{
+    background-color: whitesmoke;
+}
+
+main .logs tr.best td.points{
+    font-weight: bold;
+}
+
+main .history {
+    border: 1px solid black;
+    padding: 7px;
+    margin: 2vh 5px 0 5px;
+    width: 100%;
+
+}
+
+main .history table {
+    width: 100%;
 }
