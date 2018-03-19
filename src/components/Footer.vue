@@ -3,17 +3,18 @@
         <hr>
         <h4>Future (proposed)</h4>
         <ol>
-            <li>Add bad apples</li>
-            <li>Add network gaming</li>
-            <li>Add tests</li>
-            <li>Add CI</li>
+            <li><strong>Add network gaming</strong></li>
             <li>Use sass instead of css</li>
+            <li>Add CI</li>
+            <li>Add bad apples</li>
+            <li>Add tests</li>
             <li>Add user account</li>
-            <li>Fix bug connected with appearing simultaneously many apples</li>
             <li>Special color of head</li>
             <li>Fix bug connected with changes direction many time in one round that allow bump int snake with length 3</li>
             <li>Add login by google</li>
-            <li>Make it mobile friendly</li>
+            <li>Add sounds</li>
+            <li>Make it mobile friendly (how to swipe when we have two snakes?)</li>
+            <li>Fix bug connected with appearing simultaneously many apples (probably fixed)</li>
         </ol>
         <h4>Change Log</h4>
         <h5>v0.3</h5>
