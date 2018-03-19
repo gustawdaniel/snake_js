@@ -10,12 +10,7 @@ To install dependencies
 
 To run
 
-    live-server
-    
-Old manner of run game
-
-    node node_modules/http-server/bin/http-server 
-
+    npm run dev
 
 # Game
 

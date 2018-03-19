@@ -6,10 +6,6 @@
     margin: 2px;
 }
 
-footer {
-    padding-top: 3vh;
-}
-
 .info {
     border: 1px solid black;
     padding: 7px;
@@ -24,11 +20,12 @@ footer {
     float: right;
 }
 
-footer ul.history:not(:empty) {
+main ul.history:not(:empty) {
     border: 1px solid black;
     padding: 7px;
+    margin-top: 2vh;
 }
 
-footer ul.history li {
+main ul.history li {
     list-style: none;
 }
