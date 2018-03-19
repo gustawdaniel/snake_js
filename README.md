@@ -4,13 +4,16 @@ Snake game written in javascript using objects.
 
 # Instaltion
 
-To install dependencies
+``` bash
+# install dependencies
+yarn
 
-    yarn
+# serve with hot reload at localhost:8080
+npm run dev
 
-To run
-
-    node node_modules/http-server/bin/http-server 
+# build for production with minification
+npm run build
+```
 
 # Game
 
@@ -18,6 +21,6 @@ To game run
 
     firefox localhost:8080
     
-Pres space to start and use arrows to control snake. 
+Pres space to start and use arrows to control snake first snake or `WSAD` to control second one. 
 
-[![Zrzut_ekranu_z_2018-02-18_04-36-10.png](https://s17.postimg.org/3ptugwbzj/Zrzut_ekranu_z_2018-02-18_04-36-10.png)](https://postimg.org/image/42l8n2u97/)
+[![Zrzut_ekranu_z_2018-02-18_04-36-10.png](https://i.imgur.com/fnkcp2e.png)](https://i.imgur.com/fnkcp2e.png)
