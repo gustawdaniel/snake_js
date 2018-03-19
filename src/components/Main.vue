@@ -12,6 +12,7 @@
     import State from './main/State.vue'
     import Board from './main/Board.vue'
     import Results from './main/Results.vue'
+    import Event from '../Event';
 
     export default {
         name: "Main",
@@ -53,16 +54,7 @@
                             || inspected.y < 0 || inspected.y >= map.height;
                     },
                     init: function () {
-                        let mapDiv = $('#map');
-                        mapDiv.html("");
-                        for(let i=0; i<this.height; i++) {
-                            console.log(i);
-                            let rowDiv =$('<div>', {class: "row"});
-                            for(let j=0; j<this.width; j++) {
-                                rowDiv.append($('<div>',{class:"rect", "data-x":i, "data-y":j}));
-                            }
-                            mapDiv.append(rowDiv);
-                        }
+                        Event.$emit('reset_map');
                         snake.init();
                         this.addApple()
                     }
