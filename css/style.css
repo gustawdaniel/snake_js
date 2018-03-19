@@ -1,3 +1,7 @@
+#map .row {
+    text-align: center;
+}
+
 .rect {
     width: 30px;
     height: 30px;
@@ -22,15 +26,10 @@
 .info {
     border: 1px solid black;
     padding: 7px;
+    margin-bottom: 1em;
     text-align: center;
-}
-
-.points {
-    float: left;
-}
-
-.counter {
-    float: right;
+    justify-content: space-between;
+    display: flex;
 }
 
 main ul.history:not(:empty) {

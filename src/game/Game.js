@@ -9,6 +9,7 @@ export default {
         new Snake(1,[{x:0,y:12}],"down") // ,{x:1,y:12},{x:2,y:12}
     ],
     map: new Board(),
+    state: "paused",
     run: function () {
        this.snakes[0].move(this.snakes[0].direction);
        this.snakes[1].move(this.snakes[1].direction);
@@ -20,7 +21,6 @@ export default {
         this.counter = 0;
         this.direction = 'right';
         this.state = 'paused';
-        document.querySelector(".state").innerText = this.state.toUpperCase();
         this.map.init();
     },
     logResult: function () {

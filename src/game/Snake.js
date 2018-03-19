@@ -17,7 +17,6 @@ export default class Snake {
     }
 
     init() {
-        document.querySelector('.points').innerText = this.points;
         this.draw();
     }
 
@@ -65,7 +64,6 @@ export default class Snake {
         ) {
 
             this.points ++;
-            document.querySelector('.points').innerText = this.points.toFixed(0);
             game.map.removeApple(this.body[0]);
             game.map.addApple();
             return true;
@@ -75,11 +73,11 @@ export default class Snake {
     gameOver() {
         game.map.clearPositions(this.body);
         this.age = 0;
+        this.points = 0;
         this.inGame = false;
         this.body = this.initialConfig.body.slice(); // fastest way of cloning array https://stackoverflow.com/questions/3978492/javascript-fastest-way-to-duplicate-an-array-slice-vs-for-loop
         this.direction =  this.initialConfig.direction;
         // this.logResult();
-        // this.reset();
         this.body.forEach(el => document.querySelector(`div.rect[data-x="${el.x}"][data-y="${el.y}"]`).classList.add(`snake-${this.index}`));
     }
 };

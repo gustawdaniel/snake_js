@@ -31,7 +31,7 @@
         },
         created() {
             window.addEventListener('keydown', (e) => {
-                console.log({key: e.key, code: e.keyCode, "ok":"ok"});
+                console.log({key: e.key, code: e.keyCode});
                 switch (e.key) {
                     case "ArrowUp":
                         game.snakes[0].direction = game.snakes[0].direction === "down" || game.state === "paused" ? game.snakes[0].direction : "up"; break;
@@ -52,21 +52,18 @@
                     case " ":
                         if(game.state === 'paused') {
                             game.state = 'active';
-                            document.querySelector(".state").innerText = game.state.toUpperCase();
                             game.timeout = game.timeout || setInterval(() => {
                                 game.counter ++;
-                                document.querySelector('.counter').innerText = game.counter;
+                                game.snakes.forEach(s => s.age++);
                                 game.run();
                             },config.roundTime);
                         } else {
                             game.state = 'paused';
-                            document.querySelector(".state").textContent = game.state.toUpperCase();
                             clearInterval(game.timeout);
                             game.timeout = undefined;
                         }
                 }
                 if([" ", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.key) > -1) {
-                    console.log("CAT",e);
                     e.preventDefault();
                 }
             });

@@ -5,8 +5,8 @@
 
         <ol>
             <li style="text-decoration: line-through">Fix pausing</li>
-            <li>Show apple after start</li>
-            <li>Correct current scores by vue interface</li>
+            <li style="text-decoration: line-through">Show apple after start</li>
+            <li style="text-decoration: line-through">Correct current scores by vue interface</li>
             <li>Correct scores logging by vue interface</li>
         </ol>
 
