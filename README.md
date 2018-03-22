@@ -31,6 +31,10 @@ To run
 
     node index.js   
 
+Do debug in REPL mode
+
+    node -r ./index.js   
+
 States of client for single palyer:
 
 - paused
