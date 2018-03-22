@@ -3,23 +3,48 @@ import Board from './Board';
 import game from './Game';
 
 export default class Snake {
-    constructor(index,body,direction) {
-        this.index = index;
+    constructor(isGamerSnake, position) {
+
+        this.position = position;
+
+        if(position === "a") { // left
+            this.body = [{x:9,y:-3}];
+        } else if(position === "b") { //right
+            this.body = [{x:9,y:11}];
+        } else if(position === "c") { // top
+            this.body = [{x:9,y:11}];
+        } else if(position === "d") { // bottom
+            this.body = [{x:9,y:11}];
+        } else {
+            throw new Error("Wrong position, allowed a,b,c and d");
+        }
+
+        this.direction = Snake.positionToDirection(position);
+
         this.points = 0;
-        this.body = body;
-        this.direction = direction; // right, left, up, down,
         this.inGame = false; // check if snake goes to game area, when snake fail hi is out of game, when enter to game area hi is in game
         this.age = 0; // TODO increment snake age
         this.initialConfig = {
-            body: body.slice(),
-            direction: direction
+            body: this.body.slice(),
+            direction: this.direction
         };
         this.logs = [];
     }
 
-    init() {
-        throw new Error("DEPRECIATED, this should be done by vue");
-        this.draw();
+    static positionToDirection(position) {
+        switch (position) {
+            case "a":
+                return "up";
+            case "b":
+                return "down";
+            case "c":
+                return "right";
+            case "d":
+                return "left";
+            default:
+                throw new Error("Wrong position, allowed a,b,c,d");
+        }
+
     }
 
     containsCoordinates(inspected) {
@@ -27,11 +52,11 @@ export default class Snake {
             return part.x === inspected.x && part.y === inspected.y }).length
     }
 
-    draw() {
-        this.body.forEach((part) => {
-            document.querySelector(`div.rect[data-x="${part.x}"][data-y="${part.y}"]`).classList.add(`snake-${this.index}`);
-        })
-    }
+    // draw() {
+    //     this.body.forEach((part) => {
+    //         document.querySelector(`div.rect[data-x="${part.x}"][data-y="${part.y}"]`).classList.add(`snake-${this.index}`);
+    //     })
+    // }
 
     move(direction) {
         let head = Object.assign({}, this.body[0]);

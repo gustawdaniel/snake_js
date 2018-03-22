@@ -13,11 +13,17 @@
 .rect.out-map {
     background-color: #c1d0dc;
 }
-.rect.snake-0 {
+.rect.snake-a {
     background-color: #8165f3;
 }
-.rect.snake-1 {
+.rect.snake-b {
     background-color: #eff36a;
+}
+.rect.snake-c {
+    background-color: #3ce9f3;
+}
+.rect.snake-d {
+    background-color: #f34ce1;
 }
 .rect.apple {
     background-color: #97dcd5;
@@ -58,4 +64,8 @@ main .history {
 
 main .history table {
     width: 100%;
+}
+
+main .game-id {
+    text-align: center
 }

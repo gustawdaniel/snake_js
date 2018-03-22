@@ -19,6 +19,10 @@
         computed: {
             apples() {
                 return this.game.map.apples;
+            },
+            snakes() {
+                console.log("COMPUTED",game.snakes);
+                return game.snakes;
             }
         },
         methods: {
@@ -49,6 +53,16 @@
                         console.log('re-render end')
                     })
                 })
+            },
+            printSnakes(snakes) {
+                snakes.forEach(snake => {
+                    snake.body.forEach(a => {
+                        console.log(a, this.cordsToIndex(a.x, a.y), this.$refs[this.cordsToIndex(a.x, a.y)], this.$refs);
+                        if(this.$refs[this.cordsToIndex(a.x, a.y)]) {
+                            this.$refs[this.cordsToIndex(a.x, a.y)][0].classList.add(`snake-${snake.position}`)
+                        }
+                    });
+                });
             }
         },
         created: function () {
@@ -56,10 +70,29 @@
                 this.rerender();
             });
         },
+        mounted: function() {
+            console.log("Mounted", this.$refs);
+            this.printSnakes(this.game.snakes);
+        },
         watch: {
             apples: function(n, o) {
                 o.forEach(a => this.$refs[this.cordsToIndex(a.x,a.y)][0].classList.remove('apple'));
                 n.forEach(a => this.$refs[this.cordsToIndex(a.x,a.y)][0].classList.add('apple'));
+            },
+            snakes: {
+                immediate: true,
+                handler(n, o) {
+                    console.log("SNAKES<WATCH>",n, o);
+
+                    if(o && o.constructor === Array) {
+                        console.log("OLD");
+                        o.forEach(snake => {
+                            snake.body.forEach(a => this.$refs[this.cordsToIndex(a.x, a.y)][0].classList.remove(`snake-${snake.position}`));
+                        });
+                    }
+
+                    this.printSnakes(n);
+                }
             }
         }
     }

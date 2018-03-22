@@ -1,45 +1,31 @@
 import Snake from './Snake';
 import Board from './Board';
 
-export default {
+const game = {
     counter: 0,
     timeout: undefined,
     position: undefined,
     id: undefined,
-    snakes: [
-        // , // ,{x:8,y:-3},{x:7,y:-3}
-        // new Snake(1,[{x:0,y:12}],"down") // ,{x:1,y:12},{x:2,y:12}
-    ],
+    snakes: [],
     map: new Board(),
     state: "paused",
     run: function () {
-       this.snakes[0].move(this.snakes[0].direction);
-       this.snakes[1].move(this.snakes[1].direction);
+        this.snakes[0].move(this.snakes[0].direction);
+        this.snakes[1].move(this.snakes[1].direction);
     },
-    addSnakeToPosition(position) {
+    addSnakeToPosition(isGamerSnake, position) {
         let snake = undefined;
 
-        if(position === "a") { // left
-            snake = new Snake(0,[{x:9,y:-3}],"up");
-        } else if(position === "b") { //right
-            snake = new Snake(1,[{x:0,y:12}],"down");
-        } else if(position === "c") { // top
-            // TODO: Change positions
-            //throw new Error("Position C not implemented");
-            snake = new Snake(2,[{x:0,y:-2}],"down");
-        } else if(position === "d") { // bottom
-            //throw new Error("Position D not implemented");
-            snake = new Snake(4,[{x:9,y:11}],"up");
-        }
+        snake = new Snake(true, position);
 
         if(snake) {
             this.snakes.push(snake);
         } else {
-            throw new Error("Wrong position, allowed a,b,c and d");
+            throw new Error("Snake not created");
         }
     },
     init: function (id, position) {
-        this.addSnakeToPosition(position)
+        this.addSnakeToPosition(true, position);
         this.id = id;
         this.position = position;
         this.reset();
@@ -89,3 +75,8 @@ export default {
         });
     }
 };
+
+// For debug
+window.game = game;
+
+export default game
