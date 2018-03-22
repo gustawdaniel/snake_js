@@ -63,7 +63,7 @@ function findWithAttr(array, attr, value) {
 
 function removeEmptyGames(state) {
     state.games.forEach((game,index) => { // for any games
-        if(["a","b","c","d"].every(position => game.position === undefined)) { // if any position is undefined
+        if(["a","b","c","d"].every(position => game[position] === undefined)) { // if any position is undefined
             state.games.splice(index,1); // remove this game
         }
     })
@@ -76,8 +76,10 @@ function removeUser(state, id) {
 
     let user = state.users[position];
     user.game[user.position] = undefined;
+    // if(["a","b","c","d"].every(position => user.game[position] === undefined)) {
+    //     findWithAttr(state.games, 'id', id)
+    // }
     state.users.splice(position,1);
-    removeEmptyGames(state)
 }
 
 

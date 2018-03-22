@@ -22,6 +22,9 @@
 .rect.apple {
     background-color: #97dcd5;
 }
+.rect.transparent {
+    background-color: transparent;
+}
 
 .info {
     border: 1px solid black;
