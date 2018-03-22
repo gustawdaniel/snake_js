@@ -1,3 +1,7 @@
+#map .row {
+    text-align: center;
+}
+
 .rect {
     width: 30px;
     height: 30px;
@@ -6,29 +10,49 @@
     margin: 2px;
 }
 
-footer {
-    padding-top: 3vh;
+.rect.out-map {
+    background-color: #c1d0dc;
+}
+.rect.snake-0 {
+    background-color: #8165f3;
+}
+.rect.snake-1 {
+    background-color: #eff36a;
+}
+.rect.apple {
+    background-color: #97dcd5;
 }
 
 .info {
     border: 1px solid black;
     padding: 7px;
+    margin-bottom: 1em;
     text-align: center;
+    justify-content: space-between;
+    display: flex;
 }
 
-.points {
-    float: left;
+main .logs {
+    display: flex;
+    justify-content: space-evenly;
 }
 
-.counter {
-    float: right;
+main .logs tr.best{
+    background-color: whitesmoke;
 }
 
-footer ul.history:not(:empty) {
+main .logs tr.best td.points{
+    font-weight: bold;
+}
+
+main .history {
     border: 1px solid black;
     padding: 7px;
+    margin: 2vh 5px 0 5px;
+    width: 100%;
+
 }
 
-footer ul.history li {
-    list-style: none;
+main .history table {
+    width: 100%;
 }
