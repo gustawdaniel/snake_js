@@ -13,7 +13,7 @@ export default class Board {
             x: Math.floor(Math.random() * this.width),
             y: Math.floor(Math.random() * this.height)
         };
-       if(game.snakes[0].containsCoordinates(apple) || game.snakes[1].containsCoordinates(apple)) { // apple is on snake  then repeat
+       if( game.snakes.some(s => s.containsCoordinates(apple)) ) { // apple is on snake  then repeat
            this.addApple();
        } else {
            this.apples.push(apple);
@@ -47,8 +47,9 @@ export default class Board {
 
     init() {
         console.log(game.snakes[0]);
-        game.snakes[0].init();
-        game.snakes[1].init();
+        // throw new Error("NOT IMPLEMENTED")
+        // game.snakes[0].init();
+        // game.snakes[1].init();
         this.addApple()
     }
 }

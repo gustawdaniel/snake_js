@@ -1,6 +1,9 @@
 <template>
 
+
     <div class="logs">
+        <p>{{game.id}}</p>
+
         <div v-for="list in logs" class="history">
             <table>
                 <thead>
@@ -27,6 +30,7 @@
         name: "Results",
         data() {
             return {
+                game: game,
                 logs: game.snakes.map(s => s.logs)
             }
         },

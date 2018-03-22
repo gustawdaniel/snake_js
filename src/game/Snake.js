@@ -18,6 +18,7 @@ export default class Snake {
     }
 
     init() {
+        throw new Error("DEPRECIATED, this should be done by vue");
         this.draw();
     }
 

@@ -48,6 +48,8 @@ function registerUser(state, id) {
     game[position] = user;
 
     state.users.push(user)
+
+    return user;
 }
 
 function findWithAttr(array, attr, value) {
@@ -78,7 +80,9 @@ global.state = {
 io.on('connection', function(socket){
     console.log('a user connected', socket.id);
 
-    registerUser(state, socket.id);
+    let user = registerUser(state, socket.id);
+
+    socket.emit('register', { id: user.id, position: user.position });
 
     socket.broadcast.emit('hi');
 
