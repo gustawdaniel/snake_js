@@ -1,28 +1,28 @@
 <template>
 
-    <div id="app">
+  <div id="app">
 
-        <Header></Header>
+    <Header></Header>
 
-        <Main></Main>
+    <Main></Main>
 
-        <Footer></Footer>
+    <Footer></Footer>
 
-    </div>
+  </div>
 
 </template>
 
 <script>
 
-    import Footer from './components/Footer.vue';
-    import Header from './components/Header.vue';
-    import Main from './components/Main.vue';
+  import Footer from './components/Footer.vue';
+  import Header from './components/Header.vue';
+  import Main from './components/Main.vue';
 
-    export default {
-        name: 'app',
-        components: {
-            Header, Main, Footer
-        }
+  export default {
+    name: 'app',
+    components: {
+      Header, Main, Footer
     }
+  }
 
 </script>
