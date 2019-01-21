@@ -57,6 +57,10 @@ Pres space to start and use arrows to control snake first snake or `WSAD` to con
 <li>Fix bug connected with appearing simultaneously many apples (probably fixed)</li>
 </ol>
 <h4>Change Log</h4>
+<h5>v0.3.1</h5>
+<ol>
+<li style="text-decoration: line-through">Webpack replaced by vue-cli</li>
+</ol>
 <h5>v0.3</h5>
 <ol>
 <li style="text-decoration: line-through">Add webpack</li>
