@@ -1,3 +1,5 @@
+
+```html
 <script>
     let snake = [{ x: 5, y: 5 }];
     let direction = { x: 1, y: 0 };
@@ -9,6 +11,18 @@
     setInterval(move, 200);
 
     let map = Array.from({ length: 20 }, () => Array.from({ length: 20 }, () => 0));
+
+    window.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowUp') {
+            direction = { x: 0, y: -1 };
+        } else if (event.key === 'ArrowDown') {
+            direction = { x: 0, y: 1 };
+        } else if (event.key === 'ArrowLeft') {
+            direction = { x: -1, y: 0 };
+        } else if (event.key === 'ArrowRight') {
+            direction = { x: 1, y: 0 };
+        }
+    });
 </script>
 
 <div>
@@ -21,8 +35,6 @@
     {#each snake as segment}
         <div class="snake-segment" style="top: {segment.y * 20}px; left: {segment.x * 20}px;"></div>
     {/each}
-
-
 </div>
 
 <style>
@@ -41,3 +53,4 @@
         border: 1px solid black;
     }
 </style>
+```
