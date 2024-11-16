@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.188.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.188.0/http/mod.ts";
 
 serve((req) => {
     const url = new URL(req.url);
