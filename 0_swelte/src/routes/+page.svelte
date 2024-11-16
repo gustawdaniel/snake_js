@@ -1,27 +1,37 @@
-
-```html
 <script>
+    import { onMount } from 'svelte';
+
     let snake = [{ x: 5, y: 5 }];
     let direction = { x: 1, y: 0 };
+    let food = { x: 10, y: 10 };
 
     const move = () => {
-        snake = [{ x: snake[0].x + direction.x, y: snake[0].y + direction.y }, ...snake.slice(0, -1)];
+        const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+
+        if (head.x === food.x && head.y === food.y) {
+            food = { x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 20) };
+            snake = [head, ...snake];
+        } else {
+            snake = [head, ...snake.slice(0, -1)];
+        }
     };
 
     setInterval(move, 200);
 
     let map = Array.from({ length: 20 }, () => Array.from({ length: 20 }, () => 0));
 
-    window.addEventListener('keydown', (event) => {
-        if (event.key === 'ArrowUp') {
-            direction = { x: 0, y: -1 };
-        } else if (event.key === 'ArrowDown') {
-            direction = { x: 0, y: 1 };
-        } else if (event.key === 'ArrowLeft') {
-            direction = { x: -1, y: 0 };
-        } else if (event.key === 'ArrowRight') {
-            direction = { x: 1, y: 0 };
-        }
+    onMount(() => {
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowUp') {
+                direction = {x: 0, y: -1};
+            } else if (event.key === 'ArrowDown') {
+                direction = {x: 0, y: 1};
+            } else if (event.key === 'ArrowLeft') {
+                direction = {x: -1, y: 0};
+            } else if (event.key === 'ArrowRight') {
+                direction = {x: 1, y: 0};
+            }
+        });
     });
 </script>
 
@@ -35,6 +45,8 @@
     {#each snake as segment}
         <div class="snake-segment" style="top: {segment.y * 20}px; left: {segment.x * 20}px;"></div>
     {/each}
+
+    <div class="food" style="top: {food.y * 20}px; left: {food.x * 20}px;"></div>
 </div>
 
 <style>
@@ -52,5 +64,11 @@
         background: white;
         border: 1px solid black;
     }
+
+    .food {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: red;
+    }
 </style>
-```
