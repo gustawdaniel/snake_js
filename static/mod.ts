@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.188.0/http/mod.ts";
 
 serve((req) => {
     const url = new URL(req.url);
-    const filePath = `${Deno.cwd()}/build${url.pathname}`;
+    const filePath = `${Deno.cwd()}${url.pathname}`;
 
     try {
         const file = Deno.readFileSync(filePath);
@@ -11,7 +11,7 @@ serve((req) => {
             headers: { "content-type": contentType || "application/octet-stream" },
         });
     } catch {
-        const file = Deno.readFileSync(`${Deno.cwd()}/build/index.html`);
+        const file = Deno.readFileSync(`${Deno.cwd()}/index.html`);
         return new Response(file, {headers: { "content-type": "text/html" } });
     }
 });
