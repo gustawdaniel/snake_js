@@ -51,7 +51,12 @@
 
     onMount(() => {
         window.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && gameOver) {
+                resetGame();
+            }
+
             if (gameOver) return;
+
             if (event.key === 'ArrowUp' && direction.y === 0) {
                 direction = { x: 0, y: -1 };
             } else if (event.key === 'ArrowDown' && direction.y === 0) {
@@ -65,7 +70,7 @@
     });
 </script>
 
-<div>
+<div class="game-container">
     {#if gameOver}
         <div class="overlay">
             <p>Game Over!</p>
@@ -73,40 +78,71 @@
         </div>
     {/if}
 
-    {#each map as row, y}
-        {#each row as cell, x}
-            <div class="map-cell" style="top: {y * 20}px; left: {x * 20}px;"></div>
+    <div class="game-grid">
+        {#each map as row, y}
+            {#each row as cell, x}
+                <div class="map-cell" style="top: {y * 20}px; left: {x * 20}px;"></div>
+            {/each}
         {/each}
-    {/each}
 
-    {#each snake as segment}
-        <div class="snake-segment" style="top: {segment.y * 20}px; left: {segment.x * 20}px;"></div>
-    {/each}
+        {#each snake as segment}
+            <div class="snake-segment" style="top: {segment.y * 20}px; left: {segment.x * 20}px;"></div>
+        {/each}
 
-    <div class="food" style="top: {food.y * 20}px; left: {food.x * 20}px;"></div>
+        <div class="food" style="top: {food.y * 20}px; left: {food.x * 20}px;"></div>
+    </div>
 </div>
 
 <style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Container for centering the game */
+    .game-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+        background-color: #0d1117; /* Dark background */
+        color: #00ff00; /* Neon green text */
+        font-family: 'Courier New', Courier, monospace;
+    }
+
+    /* Game grid wrapper */
+    .game-grid {
+        position: relative;
+        width: 400px; /* gridSize * cell size */
+        height: 400px; /* gridSize * cell size */
+        border: 2px solid #00ff00; /* Neon green border */
+        box-shadow: 0 0 20px #00ff00;
+    }
+
     .snake-segment {
         position: absolute;
         width: 20px;
         height: 20px;
-        background: green;
+        background: linear-gradient(145deg, #00ff00, #006600);
+        box-shadow: 0 0 10px #00ff00;
     }
 
     .map-cell {
         position: absolute;
         width: 20px;
         height: 20px;
-        background: white;
-        border: 1px solid black;
+        background: #0d1117; /* Matches the background */
+        border: 1px solid #222; /* Subtle grid effect */
     }
 
     .food {
         position: absolute;
         width: 20px;
         height: 20px;
-        background: red;
+        background: radial-gradient(circle, #ff0000, #990000);
+        box-shadow: 0 0 10px #ff0000;
     }
 
     .overlay {
@@ -115,22 +151,36 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        color: white;
+        background: rgba(0, 0, 0, 0.9);
+        color: #00ff00; /* Neon green */
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         z-index: 10;
+        text-shadow: 0 0 10px #00ff00;
+    }
+
+    .overlay p {
+        font-size: 2rem;
+        margin-bottom: 20px;
     }
 
     .overlay button {
         margin-top: 10px;
         padding: 10px 20px;
-        background: white;
-        color: black;
-        border: none;
+        background: black;
+        color: #00ff00;
+        border: 2px solid #00ff00;
         cursor: pointer;
-        font-size: 1rem;
+        font-size: 1.2rem;
+        font-family: 'Courier New', Courier, monospace;
+        box-shadow: 0 0 10px #00ff00;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .overlay button:hover {
+        background-color: #00ff00;
+        color: black;
     }
 </style>
