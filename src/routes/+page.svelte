@@ -1,21 +1,51 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import {onMount} from 'svelte';
 
-    let snake = [{ x: 5, y: 5 }];
-    let direction = { x: 1, y: 0 };
-    let food = { x: 10, y: 10 };
-    const gridSize = 20;
-    let gameOver = false;
+    const fpsTarget = 250;
+    const avgLearningRate = 0.01;
+
+    let snake = $state([
+        {x: 5, y: 6},
+        {x: 4, y: 6},
+        {x: 3, y: 6},
+        {x: 2, y: 6}
+    ]);
+    let direction = {x: 1, y: 0};
+    let food = $state({x: 10, y: 10});
+    const gridSize = 64;
+    let gameOver = $state(false);
+
+    type Topology = 'Flat' | 'Toroidal';
+
+    const topology: Topology = 'Toroidal';
+
+    let fpsCounter = $state({
+        fps: fpsTarget,
+        lastTime: 0,
+        tick() {
+            const now = Date.now();
+            this.fps = this.fps * (1-avgLearningRate) + 1000 / (now - this.lastTime) * avgLearningRate;
+            this.lastTime = now;
+            console.log(this.fps);
+        }
+    })
+
 
     const move = () => {
         if (gameOver) return;
 
-        const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+        const head = {x: snake[0].x + direction.x, y: snake[0].y + direction.y};
 
-        // Check for collisions with borders
-        if (head.x < 0 || head.x >= gridSize || head.y < 0 || head.y >= gridSize) {
-            endGame("You hit the border!");
-            return;
+        if( topology === 'Toroidal') {
+            // Wrap around the edges for toroidal topology
+            head.x = (head.x + gridSize) % gridSize;
+            head.y = (head.y + gridSize) % gridSize;
+        } else {
+            // Check for collisions with borders
+            if (head.x < 0 || head.x >= gridSize || head.y < 0 || head.y >= gridSize) {
+                endGame("You hit the border!");
+                return;
+            }
         }
 
         // Check for collisions with the snake itself
@@ -26,11 +56,13 @@
 
         // Check if the snake eats the food
         if (head.x === food.x && head.y === food.y) {
-            food = { x: Math.floor(Math.random() * gridSize), y: Math.floor(Math.random() * gridSize) };
+            food = {x: Math.floor(Math.random() * gridSize), y: Math.floor(Math.random() * gridSize)};
             snake = [head, ...snake];
         } else {
             snake = [head, ...snake.slice(0, -1)];
         }
+
+        fpsCounter.tick();
     };
 
     const endGame = (message: string) => {
@@ -40,14 +72,19 @@
 
     const resetGame = () => {
         gameOver = false;
-        snake = [{ x: 5, y: 5 }];
-        direction = { x: 1, y: 0 };
-        food = { x: Math.floor(Math.random() * gridSize), y: Math.floor(Math.random() * gridSize) };
+        snake = [
+            {x: 5, y: 6},
+            {x: 4, y: 6},
+            {x: 3, y: 6},
+            {x: 2, y: 6}
+        ];
+        direction = {x: 1, y: 0};
+        food = {x: Math.floor(Math.random() * gridSize), y: Math.floor(Math.random() * gridSize)};
     };
 
-    setInterval(move, 200);
+    setInterval(move, 1000 / fpsTarget);
 
-    let map = Array.from({ length: gridSize }, () => Array.from({ length: gridSize }, () => 0));
+    let map = Array.from({length: gridSize}, () => Array.from({length: gridSize}, () => 0));
 
     onMount(() => {
         window.addEventListener('keydown', (event) => {
@@ -58,13 +95,13 @@
             if (gameOver) return;
 
             if (event.key === 'ArrowUp' && direction.y === 0) {
-                direction = { x: 0, y: -1 };
+                direction = {x: 0, y: -1};
             } else if (event.key === 'ArrowDown' && direction.y === 0) {
-                direction = { x: 0, y: 1 };
+                direction = {x: 0, y: 1};
             } else if (event.key === 'ArrowLeft' && direction.x === 0) {
-                direction = { x: -1, y: 0 };
+                direction = {x: -1, y: 0};
             } else if (event.key === 'ArrowRight' && direction.x === 0) {
-                direction = { x: 1, y: 0 };
+                direction = {x: 1, y: 0};
             }
         });
     });
@@ -81,16 +118,19 @@
     <div class="game-grid">
         {#each map as row, y}
             {#each row as cell, x}
-                <div class="map-cell" style="top: {y * 20}px; left: {x * 20}px;"></div>
+                <div class="map-cell" style="top: {y * 6}px; left: {x * 6}px;"></div>
             {/each}
         {/each}
 
         {#each snake as segment}
-            <div class="snake-segment" style="top: {segment.y * 20}px; left: {segment.x * 20}px;"></div>
+            <div class="snake-segment" style="top: {segment.y * 6}px; left: {segment.x * 6}px;"></div>
         {/each}
 
-        <div class="food" style="top: {food.y * 20}px; left: {food.x * 20}px;"></div>
+        <div class="food" style="top: {food.y * 6}px; left: {food.x * 6}px;"></div>
     </div>
+
+    <pre id="fps">{fpsCounter.fps.toFixed(2)} FPS</pre>
+
 </div>
 
 <style>
@@ -103,6 +143,7 @@
     /* Container for centering the game */
     .game-container {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         height: 100vh;
@@ -112,35 +153,39 @@
         font-family: 'Courier New', Courier, monospace;
     }
 
+    #fps {
+        margin-top: 10px;
+    }
+
     /* Game grid wrapper */
     .game-grid {
         position: relative;
-        width: 400px; /* gridSize * cell size */
-        height: 400px; /* gridSize * cell size */
+        width: 388px; /* gridSize * cell size */
+        height: 388px; /* gridSize * cell size */
         border: 2px solid #00ff00; /* Neon green border */
         box-shadow: 0 0 20px #00ff00;
     }
 
     .snake-segment {
         position: absolute;
-        width: 20px;
-        height: 20px;
+        width: 6px;
+        height: 6px;
         background: linear-gradient(145deg, #00ff00, #006600);
         box-shadow: 0 0 10px #00ff00;
     }
 
     .map-cell {
         position: absolute;
-        width: 20px;
-        height: 20px;
+        width: 6px;
+        height: 6px;
         background: #0d1117; /* Matches the background */
         border: 1px solid #222; /* Subtle grid effect */
     }
 
     .food {
         position: absolute;
-        width: 20px;
-        height: 20px;
+        width: 6px;
+        height: 6px;
         background: radial-gradient(circle, #ff0000, #990000);
         box-shadow: 0 0 10px #ff0000;
     }
