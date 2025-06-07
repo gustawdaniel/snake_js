@@ -26,7 +26,6 @@
             const now = Date.now();
             this.fps = this.fps * (1-avgLearningRate) + 1000 / (now - this.lastTime) * avgLearningRate;
             this.lastTime = now;
-            console.log(this.fps);
         }
     })
 
